@@ -1,0 +1,13 @@
+GEM
+  remote: https://rubygems.org/
+  specs:
+    property-list (1.0.4)
+
+PLATFORMS
+  ruby
+
+DEPENDENCIES
+  property-list
+
+BUNDLED WITH
+   2.1.4
