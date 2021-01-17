@@ -16,20 +16,25 @@ module TimeMachine
     def output
       {
         uid: 'version',
-        title: notsupport_title,
-        detail: notsupport_detail,
+        title: title,
+        detail: detail,
         icon: {
           path: ICON
         }
       }
     end
 
-    def notsupport_title
-      "WARNING: tmutil command version not support"
+    def title
+      "tmutil version: #{version}"
     end
 
-    def notsupport_detail
-      "tmutil version is: #{version}"
+    def detail
+      if support?
+        "这个版本支持的"
+      else
+        "WARNING: 这个版本没测试过"
+      end
+
     end
 
     def get_version

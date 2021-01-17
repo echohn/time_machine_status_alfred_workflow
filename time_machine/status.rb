@@ -2,10 +2,6 @@
 
 require 'property-list'
 
-require_relative "alfred_output"
-require_relative "version"
-require_relative "destination"
-
 module TimeMachine
   class OnProgress
     attr_reader :time_remaining
@@ -51,7 +47,11 @@ module TimeMachine
     end
 
     def output
-      parse_running_stage
+      if running?
+        parse_running_stage
+      else
+        set_not_running_output
+      end
 
       {
         uid: 'status',
@@ -62,6 +62,8 @@ module TimeMachine
         }
       }
     end
+
+    private
 
     def running?
       @status['Running'] == '1'
@@ -81,8 +83,6 @@ module TimeMachine
         set_finishing_output
       end
     end
-
-    private
 
     def parse_status
       command_output = `tmutil status`.lines[1..-1].join
@@ -121,30 +121,19 @@ module TimeMachine
       @title = "即将完成备份, 预计剩余 #{progress.time_remaining} 小时"
       @detail  = "This process will be done soon"
     end
+
+    def set_not_running_output
+      puts "in set_not_running_output" if DEBUG
+
+      @title = "当前未在备份"
+      @detail = "当前未在备份"
+    end
   end
 
   module Status
     module_function
     def output
-      output = AlfredOutput.new
-
-      unless Version.support?
-        output.add_item Version.output
-        return output
-      end
-
-      status = StatusParser.new
-
-      if status.running?
-        output.title_variable  = status.output[:title]
-        output.detail_variable = status.output[:detail]
-        output.add_item status.output
-        output.add_item Destination.output
-      else
-        output.add_item LastedBackup.output
-      end
-
-      output
+      StatusParser.new.output
     end
   end
 end

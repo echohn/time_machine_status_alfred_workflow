@@ -28,9 +28,9 @@ module TimeMachine
 
     def title
       if exist?
-        '备份已完成'
+        '已发现备份'
       else
-        "未找到备份"
+        "未发现备份"
       end
     end
 

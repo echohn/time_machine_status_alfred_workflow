@@ -36,7 +36,7 @@ module TimeMachine
     def output
       parser = DestinationParser.new
       {
-        uid: 'destinationinfo',
+        uid: 'z-destinationinfo',
         title: parser.title,
         subtitle: parser.detail,
         icon: {

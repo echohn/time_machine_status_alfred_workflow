@@ -7,4 +7,4 @@
 require "bundle/bundler/setup"
 require_relative './time_machine.rb'
 
-puts TimeMachine::Status.output.to_json
+puts TimeMachine.to_alfred
