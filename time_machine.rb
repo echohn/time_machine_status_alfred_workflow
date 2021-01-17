@@ -19,15 +19,13 @@ module TimeMachine
   def info
     output = AlfredOutput.new
 
-    status_output = Status.output
+    threads = [Status, Destination, LastedBackup, Version].map do |the_module|
+      Thread.new do
+        output.add_item(the_module.output)
+      end
+    end
 
-    output.title_variable  = status_output[:title]
-    output.detail_variable = status_output[:detail]
-
-    output.add_item status_output
-    output.add_item Destination.output
-    output.add_item LastedBackup.output
-    output.add_item Version.output
+    threads.map(&:join)
 
     output
   end

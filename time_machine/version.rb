@@ -14,21 +14,22 @@ module TimeMachine
     end
 
     def output
-      {
-        uid: 'version',
-        title: title,
-        detail: detail,
-        icon: {
-          path: ICON
-        }
-      }
+      OutputItem.new(uuid, order, title, subtitle, ICON)
+    end
+
+    def uuid
+      'version'
+    end
+
+    def order
+      4
     end
 
     def title
       "tmutil version: #{version}"
     end
 
-    def detail
+    def subtitle
       if support?
         "这个版本支持的"
       else

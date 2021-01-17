@@ -18,7 +18,7 @@ module TimeMachine
       "备份中, 预计剩余 #{@time_remaining} 小时"
     end
 
-    def detail
+    def         subtitle
       "进度 #{@percent}%, Bytes: #{@bytes} GB / #{@totalBytes} GB, Files: #{@files} / #{@totalFiles}"
     end
 
@@ -42,25 +42,15 @@ module TimeMachine
   end
 
   class StatusParser
-    def initialize
+    attr_reader :title, :subtitle
+    def         initialize
       parse_status
-    end
 
-    def output
       if running?
         parse_running_stage
       else
         set_not_running_output
       end
-
-      {
-        uid: 'status',
-        title: @title,
-        subtitle: @detail,
-        icon: {
-          path: ICON
-        }
-      }
     end
 
     private
@@ -95,45 +85,55 @@ module TimeMachine
     end
 
     def set_starting_output
-      @title = "正在准备备份..."
-      @detail = "需要等待一段时间"
+      @title    = "正在准备备份..."
+      @subtitle = "需要等待一段时间"
     end
 
     def set_pre_output
       puts "in set_pre_output" if DEBUG
 
-      @title = '正在执行预备份...'
-      @detail = 'This process will be done soon'
+      @title    = '正在执行预备份...'
+      @subtitle = 'This process will be done soon'
     end
 
     def set_copying_output
       puts "in set_copying_output" if DEBUG
 
-      progress = on_progress
-      @title   = progress.title
-      @detail  = progress.detail
+      progress  = on_progress
+      @title    = progress.title
+      @subtitle = progress.subtitle
     end
 
     def set_finishing_output
       puts "in set_finishing_output" if DEBUG
 
-      progress = on_progress
-      @title = "即将完成备份, 预计剩余 #{progress.time_remaining} 小时"
-      @detail  = "This process will be done soon"
+      progress  = on_progress
+      @title    = "即将完成备份, 预计剩余 #{progress.time_remaining} 小时"
+      @subtitle = "This process will be done soon"
     end
 
     def set_not_running_output
       puts "in set_not_running_output" if DEBUG
 
-      @title = "当前未在备份"
-      @detail = "当前未在备份"
+      @title    = "当前未在备份"
+      @subtitle = "当前未在备份"
     end
   end
 
   module Status
     module_function
+
     def output
-      StatusParser.new.output
+      parser = StatusParser.new
+      OutputItem.new(uuid, order, parser.title, parser.subtitle, ICON)
+    end
+
+    def uuid
+      'status'
+    end
+
+    def order
+      1
     end
   end
 end
